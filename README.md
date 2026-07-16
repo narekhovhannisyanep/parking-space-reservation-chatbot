@@ -1,28 +1,151 @@
-# The goal of the project is to develop an intelligent chatbot that can interact with users, provide information about parking spaces, handle the reservation process, and involve a human administrator for confirmation ("human-in-the-loop"). The project will be divided into 4 stages, with each stage implementing a specific functionality.
+# Parking Space Reservation Chatbot
 
-## General Requirements
+An intelligent chatbot for parking space reservation built with Python, LangChain, and LangGraph. The system uses a RAG architecture to answer user queries, collects reservation details interactively, routes requests to a human administrator for approval, and persists confirmed reservations via an MCP server — all orchestrated as a single LangGraph pipeline.
 
-### Programming Language: Python
+---
 
-### Frameworks: LangChain, LangGraph
+## Architecture Overview
 
-### Architecture: Based on Retrieval-Augmented Generation (RAG)
+```
+User
+ │
+ ▼
+[Agent 1 — RAG Chatbot]
+ │  · Answers questions about the parking facility (hours, prices, availability, location)
+ │  · Collects reservation details (name, surname, car number, period)
+ │  · Applies guardrails to prevent sensitive data exposure
+ │
+ ▼
+[Agent 2 — Admin Approval Agent]  ◄──► Administrator (email / messenger / REST API)
+ │  · Sends reservation request to admin
+ │  · Waits for confirm / refuse response
+ │
+ ▼
+[MCP Server — Reservation Writer]
+ │  · Writes confirmed reservations to file
+ │  · Format: Name | Car Number | Reservation Period | Approval Time
+ │
+ └── LangGraph orchestrates all nodes and state transitions
+```
 
-### Vector database: Recommended options include Milvus, Pinecone, or Weaviate
+**Data storage (optional enhancement):**
+- Static data (general info, parking details, location, booking process) → Vector database
+- Dynamic data (availability, prices, working hours) → SQL database
 
-## General Features
+---
 
-### The chatbot provides information (general information, working hours, prices, availability of parking spaces, location)
+## Stages
 
-The reservation process is based on the interactive collection of user data, including name, surname, car number, and reservation period.
-The system should prevent exposure of sensitive data (e.g., private information stored in the vector database).
-Evaluation of system performance (e.g., request latency, information retrieval accuracy).
+### Stage 1 — RAG System and Chatbot
+- RAG pipeline over parking facility documents stored in a vector database (Milvus / Pinecone / Weaviate)
+- Interactive conversation: answers user queries and collects reservation inputs (name, surname, car number, reservation period)
+- Guardrails: NLP-based filtering to prevent exposure of sensitive data from the vector store
+- RAG evaluation: Recall@K, Precision, request latency
 
-## Providing the result
+### Stage 2 — Human-in-the-Loop Admin Agent
+- Second LangChain agent responsible for contacting the administrator
+- Sends reservation requests and receives confirm/refuse responses (via email, messenger, or REST API)
+- Integrated with Agent 1 via LangGraph: reservation escalation triggers automatically after all user details are collected
 
-### For each task, please provide a link to your GitHub or EPAM GitLab repository in the answer field
+### Stage 3 — MCP Server for Reservation Processing
+- MCP server (open-source or custom FastAPI-based) handles confirmed reservations
+- On admin approval, writes a record to a text file: `Name | Car Number | Reservation Period | Approval Time`
+- Secured against unauthorized access
 
-### You can earn extra points if you provide the following artefacts
+### Stage 4 — LangGraph Orchestration
+- Full pipeline orchestrated as a LangGraph state graph:
+  - **Node 1**: User interaction (RAG context + chatbot)
+  - **Node 2**: Administrator approval (human-in-the-loop)
+  - **Node 3**: Data recording (MCP server call)
+- End-to-end integration testing and load testing across all components
 
-- A PowerPoint presentation explaining how the solution works, including relevant screenshots
-- A README file with clear project documentation (setup, usage, structure, etc.)
+---
+
+## Project Structure
+
+```
+parking-space-reservation-chatbot/
+├── agents/
+│   ├── rag_agent.py          # Agent 1: RAG chatbot
+│   └── admin_agent.py        # Agent 2: admin approval agent
+├── graph/
+│   └── pipeline.py           # LangGraph state graph (orchestration)
+├── mcp_server/
+│   └── server.py             # MCP server for writing confirmed reservations
+├── data/
+│   ├── static/               # Documents for vector store ingestion
+│   └── dynamic/              # Seed data for SQL database (optional)
+├── vector_store/
+│   └── ingestion.py          # Embedding and indexing pipeline
+├── guardrails/
+│   └── filter.py             # Sensitive data filtering
+├── evaluation/
+│   └── metrics.py            # Recall@K, Precision, latency measurements
+├── tests/                    # pytest test suite (≥2 tests per module)
+├── reservations.txt          # Output file for confirmed reservations
+├── requirements.txt
+└── main.py                   # Entry point
+```
+
+---
+
+## Setup
+
+```bash
+# Clone the repository
+git clone <repo-url>
+cd parking-space-reservation-chatbot
+
+# Create and activate a virtual environment
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Copy and fill in environment variables
+cp .env.example .env
+```
+
+Required environment variables (`.env`):
+```
+ANTHROPIC_API_KEY=
+VECTOR_DB_URL=
+VECTOR_DB_API_KEY=
+# Optional: SQL DB, email/messenger credentials for admin notifications
+```
+
+---
+
+## Usage
+
+```bash
+# Run the full chatbot pipeline
+python main.py
+
+# Run the MCP server separately (if standalone)
+python mcp_server/server.py
+
+# Run tests
+pytest
+
+# Run a single test module
+pytest tests/test_rag_agent.py -v
+```
+
+---
+
+## Evaluation
+
+The evaluation report covers:
+- **Retrieval accuracy**: Recall@K and Precision against a labeled question set
+- **Response latency**: end-to-end request timing per pipeline node
+- **Integration tests**: full reservation flow from user input to file write
+
+---
+
+## Extra Artifacts
+
+- [ ] PowerPoint presentation with architecture diagrams and screenshots
+- [ ] CI/CD pipeline (GitHub Actions)
+- [ ] Infrastructure as Code (Terraform) for vector DB and MCP server deployment
