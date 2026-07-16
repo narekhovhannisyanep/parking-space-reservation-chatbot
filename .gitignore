@@ -10,3 +10,10 @@ CLAUDE.md
 
 # Environment variables (secrets)
 .env
+
+# Virtual environments
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
