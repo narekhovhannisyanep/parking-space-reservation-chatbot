@@ -23,14 +23,18 @@ def split_documents() -> list[Document]:
 
 
 def _ensure_index(pc: Pinecone) -> None:
-    existing = [idx.name for idx in pc.list_indexes()]
-    if INDEX_NAME not in existing:
-        pc.create_index(
-            name=INDEX_NAME,
-            dimension=EMBEDDING_DIM,
-            metric="cosine",
-            spec=ServerlessSpec(cloud="aws", region="us-east-1"),
-        )
+    indexes = {idx.name: idx for idx in pc.list_indexes()}
+    if INDEX_NAME in indexes:
+        if indexes[INDEX_NAME].dimension != EMBEDDING_DIM:
+            pc.delete_index(INDEX_NAME)
+        else:
+            return
+    pc.create_index(
+        name=INDEX_NAME,
+        dimension=EMBEDDING_DIM,
+        metric="cosine",
+        spec=ServerlessSpec(cloud="aws", region="us-east-1"),
+    )
 
 
 def ingest() -> None:
