@@ -16,9 +16,7 @@ EMBEDDING_DIM = 768  # nomic-embed-text output dimension
 
 def split_documents() -> list[Document]:
     text = DATA_PATH.read_text(encoding="utf-8")
-    splitter = MarkdownHeaderTextSplitter(
-        headers_to_split_on=[("##", "category")]
-    )
+    splitter = MarkdownHeaderTextSplitter(headers_to_split_on=[("##", "category")])
     return splitter.split_text(text)
 
 
