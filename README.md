@@ -144,8 +144,3 @@ The evaluation report covers:
 
 ---
 
-## Extra Artifacts
-
-- [ ] PowerPoint presentation with architecture diagrams and screenshots
-- [ ] CI/CD pipeline (GitHub Actions)
-- [ ] Infrastructure as Code (Terraform) for vector DB and MCP server deployment
