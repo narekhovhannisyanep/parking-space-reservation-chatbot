@@ -1,0 +1,23 @@
+[project]
+name = "parking-space-reservation-chatbot"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "langchain>=0.3.0",
+    "langchain-community>=0.3.0",
+    "langchain-ollama>=0.2.0",
+    "langchain-pinecone>=0.2.0",
+    "langchain-text-splitters>=0.3.0",
+    "langgraph>=0.2.0",
+    "pinecone>=5.0.0",
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

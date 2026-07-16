@@ -96,12 +96,9 @@ parking-space-reservation-chatbot/
 git clone <repo-url>
 cd parking-space-reservation-chatbot
 
-# Create and activate a virtual environment
-python -m venv .venv
+# Create virtualenv and install dependencies
+uv sync --extra dev
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
 
 # Copy and fill in environment variables
 cp .env.example .env
