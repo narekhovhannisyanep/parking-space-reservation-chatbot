@@ -1,0 +1,17 @@
+[
+  {"id": 1,  "question": "What are the working hours on weekdays?",       "expected_categories": ["Working Hours"]},
+  {"id": 2,  "question": "What time does the parking close on Sunday?",   "expected_categories": ["Working Hours"]},
+  {"id": 3,  "question": "Is the parking open on public holidays?",       "expected_categories": ["Working Hours"]},
+  {"id": 4,  "question": "What is the hourly rate for a standard space?", "expected_categories": ["Prices"]},
+  {"id": 5,  "question": "Do you offer monthly parking passes?",          "expected_categories": ["Prices"]},
+  {"id": 6,  "question": "How much does an EV charging space cost daily?","expected_categories": ["Prices"]},
+  {"id": 7,  "question": "Is there a discount for disabled drivers?",     "expected_categories": ["Prices"]},
+  {"id": 8,  "question": "Where is the parking facility located?",        "expected_categories": ["Location"]},
+  {"id": 9,  "question": "How do I get there by public transport?",       "expected_categories": ["Location"]},
+  {"id": 10, "question": "How many EV charging spaces are available?",    "expected_categories": ["Availability"]},
+  {"id": 11, "question": "How many total spaces does the facility have?", "expected_categories": ["Availability", "General Information"]},
+  {"id": 12, "question": "What types of parking spaces are offered?",     "expected_categories": ["General Information"]},
+  {"id": 13, "question": "What information do I need to make a reservation?", "expected_categories": ["Booking Process"]},
+  {"id": 14, "question": "How long does it take to get a confirmation?",  "expected_categories": ["Booking Process"]},
+  {"id": 15, "question": "What happens if I do not show up on time?",     "expected_categories": ["Booking Process"]}
+]
